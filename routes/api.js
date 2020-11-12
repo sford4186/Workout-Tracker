@@ -13,7 +13,7 @@ express.get("/api/workouts", (req, res)=>{
 
 express.post("/api/workouts", (req, res)=>{
     console.log(req)
-    db.Workout.find()
+    db.Workout.create({})
     .then(workouts=>{
         console.log(workouts)
         res.json(workouts)
@@ -23,11 +23,11 @@ express.post("/api/workouts", (req, res)=>{
 
 express.put("/api/workouts/:id", (req, res)=>{
   
-   db.Workout.findOne({
-    where: {
-      id: req.params.id
-    }
-  }).then(function(dbWorkout) {
+  db.Workout.findByIdAndUpdate(
+    req.params.id,
+    {$push: {exercises: req.body}},
+    {new: true, runValidators: true}
+    ).then(function(dbWorkout) {
     res.json(dbWorkout);
     console.log(dbWorkout)
   });
@@ -35,7 +35,7 @@ express.put("/api/workouts/:id", (req, res)=>{
 
 express.get("/api/workouts/range", function(req, res) {
     console.log(req)
-    db.Workout.find()
+    db.Workout.find().limit(7)
     .then(workouts=>{
         console.log(workouts)
         res.json(workouts)
